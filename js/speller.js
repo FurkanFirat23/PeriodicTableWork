@@ -19,6 +19,7 @@ async function loadPeriodicTable() {
 function findCandidates(inputWord) {
   let oneLetterSymbols = [];
   let twoLetterSymbols = [];
+
   for (let i = 0; i < inputWord.length; i++) {
     // collect one-letter candidates
     if (inputWord[i] in symbols && !oneLetterSymbols.includes(inputWord[i])) {
@@ -49,9 +50,9 @@ function spellWord(candidates, charsLeft) {
       if (candidates.includes(two)) {
         // more characters to match ?
         if (rest.length > 0) {
-          let result = spellWord(candidates, rest);
+          let result = [two, ...spellWord(candidates, rest)];
           if (result.join("") == charsLeft) {
-            return [two, ...result];
+            return result;
           }
         } else {
           return [two];
@@ -65,9 +66,9 @@ function spellWord(candidates, charsLeft) {
       let rest = charsLeft.slice(1);
       if (candidates.includes(one)) {
         if (rest.length > 0) {
-          let result = spellWord(candidates, rest);
-          if (result.join("") == rest) {
-            return [one, ...result];
+          let result = [one, ...spellWord(candidates, rest)];
+          if (result.join("") == charsLeft) {
+            return result;
           }
         } else {
           return [one];
@@ -75,6 +76,7 @@ function spellWord(candidates, charsLeft) {
       }
     }
   }
+  return [];
 }
 
 function check(inputWord) {
